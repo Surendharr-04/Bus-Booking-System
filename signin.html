@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In - TravelEase Bus Booking</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  
+  <style>
+    /* SAME CSS AS YOUR VERSION (NOT CHANGED) */
+    :root {
+      --primary-color: #3a86ff;
+      --secondary-color: #ff5722;
+      --accent-color: #4cc9f0;
+      --dark-color: #192841;
+      --light-color: #f8f9fa;
+      --success-color: #38b000;
+      --text-color: #333;
+      --light-text: #f8f9fa;
+      --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      --hover-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+    *{margin:0;padding:0;box-sizing:border-box;transition:.3s ease}
+    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#f5f7fa,#c3cfe2);min-height:100vh;display:flex;flex-direction:column}
+    header{background:linear-gradient(to right,#192841,#2d4263);color:#fff;padding:1.2rem 5%;position:sticky;top:0;z-index:1000;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--shadow)}
+    nav{display:flex;gap:15px}
+    nav a{color:white;text-decoration:none;padding:.5rem 1rem;border-radius:50px;border:1px solid rgba(255,255,255,.1)}
+    nav a:hover{background:var(--secondary-color)}
+    .main-container{flex:1;display:flex;justify-content:center;align-items:center;padding:40px 20px}
+    .signin-container{background:white;border-radius:15px;box-shadow:var(--hover-shadow);display:grid;grid-template-columns:1fr 1fr;overflow:hidden;max-width:900px;width:100%}
+    .signin-image{background:linear-gradient(rgba(25,40,65,.7),rgba(25,40,65,.7)),url('/api/placeholder/600/900');background-size:cover;padding:40px;color:white;text-align:center}
+    .signin-form{padding:40px}
+    .form-group{margin-bottom:25px;position:relative}
+    .form-group input{width:100%;padding:12px 15px;padding-left:40px;border-radius:8px;border:1px solid #ddd}
+    .form-group i{position:absolute;left:15px;top:42px;color:#aaa}
+    .signin-btn{background:var(--primary-color);color:white;border:none;padding:12px 25px;border-radius:8px;font-size:1rem;width:100%;cursor:pointer}
+    .signin-btn:hover{background:#2a75e6}
+    footer{background:#192841;color:#ccc;text-align:center;padding:20px;margin-top:auto}
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">
+    <i class="fas fa-bus"></i>
+    <h1>TravelEase Bus Booking</h1>
+  </div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="signup.html">Sign Up</a>
+  </nav>
+</header>
+
+<div class="main-container">
+  <div class="signin-container" data-aos="fade-up">
+    
+    <div class="signin-image">
+      <h2>Welcome Back!</h2>
+      <p>Login to manage your bookings.</p>
+    </div>
+
+    <div class="signin-form">
+      <h2>Sign In</h2>
+
+      <form id="signin-form">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="Enter your email" required>
+          <i class="fas fa-envelope"></i>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Enter your password" required>
+          <i class="fas fa-lock"></i>
+        </div>
+
+        <button type="submit" class="signin-btn">
+          <i class="fas fa-sign-in-alt"></i> Sign In
+        </button>
+
+        <div class="signup-link">
+          <p>Don't have an account? <a href="signup.html">Create one</a></p>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 TravelEase Bus Booking System</p>
+</footer>
+
+<script>
+  AOS.init({ duration: 800, once: true });
+
+  // auto detect if running locally or on Render
+  const API_BASE = window.location.origin.includes("localhost")
+    ? "http://localhost:5000"
+    : "https://bus-booking-cnxe.onrender.com";
+
+  document.getElementById("signin-form").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    try {
+      const response = await fetch(`${API_BASE}/api/signin`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // save JWT token for later usage
+        localStorage.setItem("token", data.token);
+
+        alert("Login successful!");
+
+        // redirect to homepage or dashboard
+        window.location.href = "index.html";
+      } else {
+        alert(data.error || "Invalid email or password");
+      }
+    } catch (error) {
+      console.error("Signin error:", error);
+      alert("Network error. Try again.");
+    }
+  });
+</script>
+
+</body>
+</html>
